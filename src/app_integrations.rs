@@ -1,18 +1,17 @@
-// src/app_integrations.rs
 use std::process::Command;
 
-pub fn open_figma() {
+pub fn open_figma() -> Result<(), Box<dyn std::error::Error>> {
     Command::new("open")
         .arg("-a")
         .arg("Figma")
-        .spawn()
-        .expect("Failed to open Figma");
+        .spawn()?;
+    Ok(())
 }
 
-pub fn open_zoom() {
+pub fn open_zoom() -> Result<(), Box<dyn std::error::Error>> {
     Command::new("open")
         .arg("-a")
-        .arg("Zoom")
-        .spawn()
-        .expect("Failed to open Zoom");
+        .arg("zoom.us") // Use "zoom.us" for macOS
+        .spawn()?;
+    Ok(())
 }

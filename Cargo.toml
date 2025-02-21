@@ -10,3 +10,4 @@ device_query = "3.0.0"
 csv = "1.2"
 webbrowser = "0.8"
 chrono = "0.4"
+notify-rust = "4.8.0" # Add this line

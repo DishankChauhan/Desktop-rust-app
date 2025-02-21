@@ -1,20 +1,30 @@
-// src/recording.rs
+use std::fs;
 use std::process::Command;
 
-pub fn start_recording(output_file: &str) {
-    Command::new("ffmpeg")
-        .arg("-f")
-        .arg("avfoundation")
-        .arg("-i")
-        .arg("1:0") // 1:0 is the default screen capture device on macOS
-        .arg(output_file)
-        .spawn()
-        .expect("Failed to start recording");
+pub fn start_recording(output_dir: &str) -> Result<(), Box<dyn std::error::Error>> {
+    // Create the output directory if it doesn't exist
+    fs::create_dir_all(output_dir)?;
+
+    let output_file = format!("{}/output.mp4", output_dir);
+
+    // Check if the file already exists and delete it
+    if fs::metadata(&output_file).is_ok() {
+        fs::remove_file(&output_file)?;
+    }
+
+    // Start screen recording
+    Command::new("screencapture")
+        .arg("-v")
+        .arg(&output_file)
+        .spawn()?;
+    Ok(())
 }
 
-pub fn stop_recording() {
+pub fn stop_recording() -> Result<(), Box<dyn std::error::Error>> {
+    // Send SIGINT to screencapture (equivalent to Ctrl+C)
     Command::new("pkill")
-        .arg("ffmpeg")
-        .spawn()
-        .expect("Failed to stop recording");
+        .arg("-SIGINT")
+        .arg("screencapture")
+        .spawn()?;
+    Ok(())
 }
